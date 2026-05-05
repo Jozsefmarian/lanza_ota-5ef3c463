@@ -205,11 +205,14 @@ const AppLayout: React.FC = () => {
     setSearchResultsOpen(true);
   };
   return <div className="min-h-screen bg-gray-50">
-      {/* Promóciós Banner */}
-      <AppBanner />
+      {/* Sticky csoport: promóciós banner + fejléc együtt */}
+      <div className="fixed top-0 left-0 right-0 z-50">
+        <AppBanner />
+        <Header user={user} onAuthClick={() => setAuthModalOpen(true)} onDashboardClick={() => setDashboardOpen(true)} cartCount={cart.length} wishlistCount={wishlist.length} />
+      </div>
 
-      {/* Fejléc */}
-      <Header user={user} onAuthClick={() => setAuthModalOpen(true)} onDashboardClick={() => setDashboardOpen(true)} cartCount={cart.length} wishlistCount={wishlist.length} />
+      {/* Spacer a fix fejléc magasságához (banner ~36px + header 64/80px) */}
+      <div className="h-[100px] lg:h-[116px]" aria-hidden="true" />
 
       {/* Hero Szekció */}
       <section className="relative min-h-screen flex items-center justify-center">
