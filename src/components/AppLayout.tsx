@@ -212,10 +212,10 @@ const AppLayout: React.FC = () => {
       <Header user={user} onAuthClick={() => setAuthModalOpen(true)} onDashboardClick={() => setDashboardOpen(true)} cartCount={cart.length} wishlistCount={wishlist.length} />
 
       {/* Hero Szekció */}
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-        {/* Háttérkép */}
-        <div className="absolute inset-0">
-          <img src={images.hero} alt="Utazási célpont" className="w-full h-full object-cover" />
+      <section className="relative min-h-screen flex items-center justify-center">
+        {/* Háttérkép - rögzített, nem mozdul a tab váltáskor */}
+        <div className="absolute top-0 left-0 right-0 h-screen overflow-hidden pointer-events-none">
+          <img src={images.hero} alt="Utazási célpont" className="w-full h-full object-cover object-center" />
           <div className="absolute inset-0 bg-gradient-to-b from-slate-900/70 via-purple-900/50 to-slate-900/80" />
         </div>
 
