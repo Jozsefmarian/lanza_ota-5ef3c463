@@ -23,7 +23,7 @@ if (req.method === "POST") {
     // 1️⃣ Ha nincs query vagy túl rövid → üres lista
     if (!query || query.length < 2) {
       return new Response(JSON.stringify([]), {
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", ...corsHeaders },
       });
     }
 
