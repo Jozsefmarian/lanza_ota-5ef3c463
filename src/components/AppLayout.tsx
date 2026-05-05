@@ -233,7 +233,7 @@ const AppLayout: React.FC = () => {
       <div style={{ height: stickyHeight }} aria-hidden="true" />
 
       {/* Hero Szekció */}
-      <section className="relative w-full flex flex-col items-center justify-start">
+      <section className="relative w-full flex flex-col items-center justify-start overflow-hidden" style={{ minHeight: '680px' }}>
         {/* Háttérkép - rögzített, nem mozdul a tab váltáskor */}
         <div className="fixed top-0 left-0 right-0 bottom-0 -z-10 pointer-events-none">
           <img src={images.hero} alt="Utazási célpont" className="w-full h-full object-cover object-center" />
