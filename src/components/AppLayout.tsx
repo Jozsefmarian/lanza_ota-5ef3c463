@@ -233,15 +233,15 @@ const AppLayout: React.FC = () => {
       <div style={{ height: stickyHeight }} aria-hidden="true" />
 
       {/* Hero Szekció */}
-      <section className="relative w-full flex flex-col items-center justify-start">
+      <section className="relative w-full flex flex-col items-center justify-start overflow-hidden" style={{ minHeight: '680px' }}>
         {/* Háttérkép - rögzített, nem mozdul a tab váltáskor */}
-        <div className="fixed top-0 left-0 right-0 bottom-0 -z-10 pointer-events-none">
+        <div className="absolute inset-0 pointer-events-none">
           <img src={images.hero} alt="Utazási célpont" className="w-full h-full object-cover object-center" />
           <div className="absolute inset-0 bg-gradient-to-b from-slate-900/70 via-purple-900/50 to-slate-900/80" />
         </div>
 
         {/* Tartalom */}
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-16">
+        <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-16">
           <div className="text-center mb-12">
             <span className="inline-flex items-center space-x-2 px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full text-white/90 text-sm mb-6">
               <TrendingUp className="w-4 h-4" />
