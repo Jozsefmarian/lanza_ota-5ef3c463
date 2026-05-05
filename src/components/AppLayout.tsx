@@ -235,7 +235,7 @@ const AppLayout: React.FC = () => {
       {/* Hero Szekció */}
       <section className="relative w-full flex flex-col items-center justify-start overflow-hidden" style={{ minHeight: '680px' }}>
         {/* Háttérkép - rögzített, nem mozdul a tab váltáskor */}
-        <div className="fixed top-0 left-0 right-0 bottom-0 -z-10 pointer-events-none">
+        <div className="absolute inset-0 pointer-events-none">
           <img src={images.hero} alt="Utazási célpont" className="w-full h-full object-cover object-center" />
           <div className="absolute inset-0 bg-gradient-to-b from-slate-900/70 via-purple-900/50 to-slate-900/80" />
         </div>
