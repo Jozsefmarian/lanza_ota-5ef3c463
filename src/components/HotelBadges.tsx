@@ -13,6 +13,7 @@ export interface HotelBadgesProps {
 }
 
 const HotelBadges: React.FC<HotelBadgesProps> = ({
+  mealLabel = null,
   hasBreakfast = false,
   hasFreeCancellation = false,
   hasWifi = false,
