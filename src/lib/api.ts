@@ -6,7 +6,7 @@ import { supabase, callEdgeFunction } from './supabase';
 
 export interface SearchPageParams {
   // Ratehawk edge function ezt várja (region-alapú keresés)
-  regionId: number;
+  regionId?: number;
 
   // UI-hoz maradhat, de a backendnek nem kötelező
   destination?: string;
@@ -17,8 +17,8 @@ export interface SearchPageParams {
   currency?: string;
   language?: string;
   residency?: string;
-  page: number;
-  pageSize: number;
+  page?: number;
+  pageSize?: number;
   debug?: boolean;
 }
 
@@ -30,6 +30,12 @@ export interface SearchPageResult {
   totalPages?: number;
   hotels?: any[];
   error?: string;
+  debug_version?: string;
+  enrichment_partial?: boolean;
+  fetched_static_count?: number;
+  cache_hit_count?: number;
+  missing_static_count?: number;
+  [key: string]: any;
 }
 
 export async function searchHotelsPage(params: SearchPageParams): Promise<SearchPageResult> {
@@ -73,9 +79,11 @@ export interface HotelDetailsParams {
 // ratehawk-hotel -> { success, info, hp, error? }
 export interface HotelDetailsResult {
   success: boolean;
-  info?: any;   // /hotel/info/ válasz (hotel static/content jellegű)
-  hp?: any;     // /search/hp/ válasz (hotelpage: rates, stb.)
+  info?: any;
+  hp?: any;
+  hotel?: any;
   error?: string;
+  [key: string]: any;
 }
 
 export async function getHotelDetails(params: any) {
@@ -130,6 +138,8 @@ export interface PrebookResult {
     noShow: any;
     requiredFields: string[];
     paymentTypes: string[];
+    priceMismatch?: { search: { amount: string; currency: string }; prebook: { amount: string; currency: string } };
+    [key: string]: any;
   };
   available?: boolean;
   error?: string;
