@@ -30,6 +30,24 @@ import { User, getStoredUser, syncWishlist, getWishlist, saveBooking, saveSearch
 const AppLayout: React.FC = () => {
   // Auth state
   const [authModalOpen, setAuthModalOpen] = useState(false);
+  const [bannerVisible, setBannerVisible] = useState(true);
+  const stickyHeaderRef = useRef<HTMLDivElement>(null);
+  const [stickyHeight, setStickyHeight] = useState<number>(116);
+
+  useLayoutEffect(() => {
+    const el = stickyHeaderRef.current;
+    if (!el) return;
+    const update = () => setStickyHeight(el.offsetHeight);
+    update();
+    const ro = new ResizeObserver(update);
+    ro.observe(el);
+    window.addEventListener('resize', update);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener('resize', update);
+    };
+  }, [bannerVisible]);
+
   const [user, setUser] = useState<User | null>(null);
   const [dashboardOpen, setDashboardOpen] = useState(false);
 
