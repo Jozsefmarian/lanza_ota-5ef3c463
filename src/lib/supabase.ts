@@ -4,8 +4,8 @@ import { createClient } from '@supabase/supabase-js';
 // Famous-provided Backend Configuration
 // ============================================
 // Famous / databasepad Supabase-compatible backend
-const supabaseUrl = 'https://kgexvtbvknhwdfcjpyaf.databasepad.com';
-const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImU4OTE1NzM5LWIyZjgtNGVlMS1hZTViLTI2YmRiYjJiM2FhNyJ9.eyJwcm9qZWN0SWQiOiJrZ2V4dnRidmtuaHdkZmNqcHlhZiIsInJvbGUiOiJhbm9uIiwiaWF0IjoxNzY3MjY1MDAyLCJleHAiOjIwODI2MjUwMDIsImlzcyI6ImZhbW91cy5kYXRhYmFzZXBhZCIsImF1ZCI6ImZhbW91cy5jbGllbnRzIn0.ub9z9DzKCKrmaXe0NaHnx6lHivpUCMwayNuT_DVceDM';
+const supabaseUrl = 'https://abieqpmvsufqzbqirqnu.supabase.co';
+const supabaseKey = 'sb_publishable_intndgJTMxhrMWwjRuEWvQ_YWvDKn85';
 
 export const supabase = createClient(supabaseUrl, supabaseKey, {
   auth: {
