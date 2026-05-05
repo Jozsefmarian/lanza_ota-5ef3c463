@@ -340,9 +340,9 @@ const SearchWidget: React.FC<SearchWidgetProps> = ({ onSearch }) => {
   );
 
   return (
-    <div className="w-full max-w-5xl mx-auto">
+    <div className="w-full max-w-5xl mx-auto" style={{ minHeight: '220px' }}>
       {/* Glassmorphism Container */}
-      <div className="bg-white/10 backdrop-blur-xl rounded-3xl border border-white/20 shadow-2xl overflow-visible">
+      <div className="bg-white/10 backdrop-blur-xl rounded-3xl border border-white/20 shadow-2xl overflow-visible" style={{ minHeight: '180px' }}>
         {/* Tab Header */}
         <div className="flex border-b border-white/10">
           <button
