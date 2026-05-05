@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, useRef, useLayoutEffect } from 'react';
 import { SlidersHorizontal, TrendingUp, Building2, ArrowRight, Plane, Car } from 'lucide-react';
 import Header from './Header';
 import AppBanner from './AppBanner';
@@ -30,6 +30,24 @@ import { User, getStoredUser, syncWishlist, getWishlist, saveBooking, saveSearch
 const AppLayout: React.FC = () => {
   // Auth state
   const [authModalOpen, setAuthModalOpen] = useState(false);
+  const [bannerVisible, setBannerVisible] = useState(true);
+  const stickyHeaderRef = useRef<HTMLDivElement>(null);
+  const [stickyHeight, setStickyHeight] = useState<number>(116);
+
+  useLayoutEffect(() => {
+    const el = stickyHeaderRef.current;
+    if (!el) return;
+    const update = () => setStickyHeight(el.offsetHeight);
+    update();
+    const ro = new ResizeObserver(update);
+    ro.observe(el);
+    window.addEventListener('resize', update);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener('resize', update);
+    };
+  }, [bannerVisible]);
+
   const [user, setUser] = useState<User | null>(null);
   const [dashboardOpen, setDashboardOpen] = useState(false);
 
@@ -206,13 +224,13 @@ const AppLayout: React.FC = () => {
   };
   return <div className="min-h-screen bg-gray-50">
       {/* Sticky csoport: promóciós banner + fejléc együtt */}
-      <div className="fixed top-0 left-0 right-0 z-50">
-        <AppBanner />
+      <div ref={stickyHeaderRef} className="fixed top-0 left-0 right-0 z-50">
+        {bannerVisible && <AppBanner onClose={() => setBannerVisible(false)} />}
         <Header user={user} onAuthClick={() => setAuthModalOpen(true)} onDashboardClick={() => setDashboardOpen(true)} cartCount={cart.length} wishlistCount={wishlist.length} />
       </div>
 
-      {/* Spacer a fix fejléc magasságához (banner ~36px + header 64/80px) */}
-      <div className="h-[100px] lg:h-[116px]" aria-hidden="true" />
+      {/* Spacer = fix fejléc tényleges magassága, hogy ne maradjon fehér rés */}
+      <div style={{ height: stickyHeight }} aria-hidden="true" />
 
       {/* Hero Szekció */}
       <section className="relative min-h-screen flex items-center justify-center">
