@@ -313,7 +313,7 @@ const SearchWidget: React.FC<SearchWidgetProps> = ({ onSearch }) => {
   );
 
   const AirportSuggestionList = ({ suggestions, onSelect }: { suggestions: typeof POPULAR_AIRPORTS; onSelect: (a: typeof POPULAR_AIRPORTS[0]) => void }) => (
-    <div className="absolute top-full left-0 right-0 mt-1 bg-white rounded-xl shadow-2xl border border-gray-100 z-50 max-h-60 overflow-y-auto">
+    <div className="absolute top-full left-0 right-0 mt-1 bg-white rounded-xl shadow-2xl border border-gray-100 z-50 max-h-72 overflow-y-auto overscroll-contain">
       {suggestions.length === 0 ? (
         <div className="p-3 text-sm text-gray-500">Nincs találat. Írd be az IATA kódot (pl. ACE).</div>
       ) : (
@@ -342,7 +342,7 @@ const SearchWidget: React.FC<SearchWidgetProps> = ({ onSearch }) => {
   return (
     <div className="w-full max-w-5xl mx-auto">
       {/* Glassmorphism Container */}
-      <div className="bg-white/10 backdrop-blur-xl rounded-3xl border border-white/20 shadow-2xl overflow-hidden">
+      <div className="bg-white/10 backdrop-blur-xl rounded-3xl border border-white/20 shadow-2xl overflow-visible">
         {/* Tab Header */}
         <div className="flex border-b border-white/10">
           <button
