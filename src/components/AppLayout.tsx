@@ -11,7 +11,7 @@ import TestimonialsSection from './TestimonialsSection';
 import AuthModal from './AuthModal';
 import BookingModal from './BookingModal';
 import FilterSidebar from './FilterSidebar';
-import LiveBookingNotification from './LiveBookingNotification';
+
 import SearchResultsModal from './SearchResultsModal';
 import UserDashboard from './UserDashboard';
 import Footer from './Footer';
@@ -496,7 +496,7 @@ const AppLayout: React.FC = () => {
       {user && <UserDashboard isOpen={dashboardOpen} onClose={() => setDashboardOpen(false)} user={user} onLogout={handleLogout} onRunSearch={handleRunSavedSearch} />}
 
       {/* Élő Foglalási Értesítések */}
-      <LiveBookingNotification />
+      
     </div>;
 };
 export default AppLayout;
