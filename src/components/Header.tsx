@@ -14,10 +14,10 @@ import { User as UserType } from "../lib/auth";
 
 interface HeaderProps {
   user?: UserType | null;
-  onAuthClick: () => void;
+  onAuthClick?: () => void;
   onDashboardClick?: () => void;
-  cartCount: number;
-  wishlistCount: number;
+  cartCount?: number;
+  wishlistCount?: number;
 }
 
 const CURRENCIES = ["EUR", "USD", "HUF", "GBP"] as const;
