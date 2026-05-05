@@ -80,7 +80,7 @@ const FilterSidebar: React.FC<FilterSidebarProps> = ({
       )}
 
       {/* Sidebar */}
-      <div className={`fixed lg:sticky top-0 left-0 h-full lg:h-auto w-80 bg-white shadow-xl lg:shadow-lg rounded-none lg:rounded-2xl z-50 lg:z-auto transform transition-transform duration-300 ${
+      <div className={`fixed lg:sticky top-16 left-0 h-full lg:h-auto w-80 bg-white shadow-xl lg:shadow-lg rounded-none lg:rounded-2xl z-50 lg:z-auto transform transition-transform duration-300 ${
         isOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
       }`}>
         {/* Header */}
