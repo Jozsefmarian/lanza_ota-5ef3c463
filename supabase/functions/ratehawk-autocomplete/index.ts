@@ -1,4 +1,14 @@
+const corsHeaders = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Methods": "POST, GET, OPTIONS",
+};
+
 Deno.serve(async (req) => {
+  if (req.method === "OPTIONS") {
+    return new Response("ok", { headers: corsHeaders });
+  }
+
   try {
     let query: string | null = null;
 
@@ -13,7 +23,7 @@ if (req.method === "POST") {
     // 1️⃣ Ha nincs query vagy túl rövid → üres lista
     if (!query || query.length < 2) {
       return new Response(JSON.stringify([]), {
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", ...corsHeaders },
       });
     }
 
