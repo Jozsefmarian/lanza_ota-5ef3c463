@@ -10,7 +10,7 @@ import DealsSection from './DealsSection';
 import TestimonialsSection from './TestimonialsSection';
 import AuthModal from './AuthModal';
 import BookingModal from './BookingModal';
-import FilterSidebar from './FilterSidebar';
+
 
 import SearchResultsModal from './SearchResultsModal';
 import UserDashboard from './UserDashboard';
@@ -62,7 +62,7 @@ const AppLayout: React.FC = () => {
   const [searchParams, setSearchParams] = useState<any>({});
 
   // Filter state
-  const [filterSidebarOpen, setFilterSidebarOpen] = useState(false);
+  
   const [activeCategory, setActiveCategory] = useState('all');
   const [filters, setFilters] = useState({
     priceRange: [0, 2000] as [number, number],
@@ -304,10 +304,6 @@ const AppLayout: React.FC = () => {
                 Fedezd fel a legkeresettebb helyeket, ahová az utazók most foglalnak
               </p>
             </div>
-            <button onClick={() => setFilterSidebarOpen(true)} className="mt-4 lg:mt-0 inline-flex items-center space-x-2 px-4 py-2 bg-white border border-gray-200 rounded-xl text-gray-700 hover:bg-gray-50 transition-all lg:hidden">
-              <SlidersHorizontal className="w-5 h-5" />
-              <span>Szűrők</span>
-            </button>
           </div>
 
           <div className="mb-8">
@@ -489,7 +485,7 @@ const AppLayout: React.FC = () => {
 
       <BookingModal isOpen={bookingModalOpen} onClose={() => setBookingModalOpen(false)} item={bookingItem} type={bookingType} onConfirm={handleBookingConfirm} />
 
-      <FilterSidebar isOpen={filterSidebarOpen} onClose={() => setFilterSidebarOpen(false)} filters={filters} onFilterChange={setFilters} type="destinations" />
+      
 
       <SearchResultsModal isOpen={searchResultsOpen} onClose={() => setSearchResultsOpen(false)} searchType={searchType} searchParams={searchParams} onSelect={handleSearchResultSelect} />
 
