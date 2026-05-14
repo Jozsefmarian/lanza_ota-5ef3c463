@@ -5,7 +5,7 @@ import { createClient } from '@supabase/supabase-js';
 // ============================================
 // Famous / databasepad Supabase-compatible backend
 const supabaseUrl = 'https://abieqpmvsufqzbqirqnu.supabase.co';
-const supabaseKey = 'sb_publishable_intndgJTMxhrMWwjRuEWvQ_YWvDKn85';
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFiaWVxcG12c3VmcXpicWlycW51Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU5MjU4NjUsImV4cCI6MjA5MTUwMTg2NX0.cCP1mmfVI2vscXDyJgUoufrA6hxv-q5mgnvxc_BdbjA';
 
 export const supabase = createClient(supabaseUrl, supabaseKey, {
   auth: {
