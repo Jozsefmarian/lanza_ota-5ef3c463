@@ -1,20 +1,22 @@
-import { createClient } from '@supabase/supabase-js';
+import { createClient } from "@supabase/supabase-js";
 
 // ============================================
 // Famous-provided Backend Configuration
 // ============================================
 // Famous / databasepad Supabase-compatible backend
-const supabaseUrl = 'https://kgexvtbvknhwdfcjpyaf.databasepad.com';
-const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6ImU4OTE1NzM5LWIyZjgtNGVlMS1hZTViLTI2YmRiYjJiM2FhNyJ9.eyJwcm9qZWN0SWQiOiJrZ2V4dnRidmtuaHdkZmNqcHlhZiIsInJvbGUiOiJhbm9uIiwiaWF0IjoxNzY3MjY1MDAyLCJleHAiOjIwODI2MjUwMDIsImlzcyI6ImZhbW91cy5kYXRhYmFzZXBhZCIsImF1ZCI6ImZhbW91cy5jbGllbnRzIn0.ub9z9DzKCKrmaXe0NaHnx6lHivpUCMwayNuT_DVceDM';
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || "https://abieqpmvsufqzbqirqnu.supabase.co";
+const supabaseKey =
+  import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY ||
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFjZmdubWNybmdhb3N2a2N2a2pjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYwMTYzMzgsImV4cCI6MjA5MTU5MjMzOH0.R94ZTgpIfo3TB4ZG1auHnz7rXjdjUyBZsGbmTfX4IHU";
 
 export const supabase = createClient(supabaseUrl, supabaseKey, {
   auth: {
-  persistSession: true,
-  autoRefreshToken: true,
-},
+    persistSession: true,
+    autoRefreshToken: true,
+  },
   global: {
     headers: {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
     },
   },
 });
@@ -29,21 +31,21 @@ export const FAMOUS_API_BASE_URL = supabaseUrl;
 export async function callEdgeFunction<T = any>(
   functionName: string,
   body: Record<string, any>,
-  options?: { auth?: 'anon' | 'user'; accessToken?: string }
+  options?: { auth?: "anon" | "user"; accessToken?: string },
 ): Promise<{ data: T | null; error: Error | null }> {
   try {
-    const authMode = options?.auth ?? 'anon';
+    const authMode = options?.auth ?? "anon";
 
     // Alap headerek (Famous/databasepad miatt)
     const headers: Record<string, string> = {
       apikey: supabaseKey,
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
     };
 
     // AUTH header kezelése
     // - anon: anon kulcs
     // - user: access token (ha van direkt), különben session-ből próbálja
-    if (authMode === 'anon') {
+    if (authMode === "anon") {
       headers.Authorization = `Bearer ${supabaseKey}`;
     } else {
       const directToken = options?.accessToken;
@@ -57,7 +59,7 @@ export async function callEdgeFunction<T = any>(
         if (accessToken) {
           headers.Authorization = `Bearer ${accessToken}`;
         } else {
-          console.warn('callEdgeFunction(user): No access token in session');
+          console.warn("callEdgeFunction(user): No access token in session");
         }
       }
     }
