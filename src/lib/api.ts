@@ -498,159 +498,22 @@ export interface AviasalesSearchResult {
 
 export async function searchFlights(params: AviasalesSearchParams): Promise<AviasalesSearchResult> {
   try {
-    const origin = String(params.origin || "").toUpperCase();
-    const destination = String(params.destination || "").toUpperCase();
-    const currency = (params.currency || "EUR").toLowerCase();
-    const adults = params.adults || 1;
-    const departureDate = params.departureDate || "";
-    const returnDate = params.returnDate || null;
-    const monthParam = departureDate.slice(0, 7); // YYYY-MM
-
-    // Affiliate token (public, read-only Data API)
-    const TOKEN = "b0e7fe52c303829862f641dbc8189114";
-    const MARKER = "545241";
-
-    // Build affiliate redirect URL (Aviasales booking link)
-    const buildAffiliateUrl = (depDate: string, retDate: string | null) => {
-      const dep = depDate.replace(/-/g, "");
-      const dd = dep.slice(6, 8);
-      const mm = dep.slice(4, 6);
-      let url = `https://www.aviasales.com/search/${origin}${dd}${mm}${destination}`;
-      if (retDate) {
-        const ret = retDate.replace(/-/g, "");
-        url += ret.slice(6, 8) + ret.slice(4, 6);
-      }
-      url += `${adults}?marker=${MARKER}&shmarker=${MARKER}`;
-      return url;
-    };
-
-    const mainAffiliateUrl = buildAffiliateUrl(departureDate, returnDate);
-
-    // Call 1: Latest prices for this route
-    const latestUrl = new URL("https://api.travelpayouts.com/v2/prices/latest");
-    latestUrl.searchParams.set("origin", origin);
-    latestUrl.searchParams.set("destination", destination);
-    latestUrl.searchParams.set("currency", currency);
-    latestUrl.searchParams.set("period_type", "year");
-    latestUrl.searchParams.set("one_way", returnDate ? "false" : "true");
-    latestUrl.searchParams.set("show_to_affiliates", "true");
-    latestUrl.searchParams.set("sorting", "price");
-    latestUrl.searchParams.set("limit", "30");
-    latestUrl.searchParams.set("token", TOKEN);
-
-    // Call 2: Month calendar
-    const monthUrl = new URL("https://api.travelpayouts.com/v2/prices/month-matrix");
-    monthUrl.searchParams.set("origin", origin);
-    monthUrl.searchParams.set("destination", destination);
-    monthUrl.searchParams.set("currency", currency);
-    monthUrl.searchParams.set("month", monthParam + "-01");
-    monthUrl.searchParams.set("show_to_affiliates", "true");
-    monthUrl.searchParams.set("token", TOKEN);
-
-    const [latestRes, monthRes] = await Promise.allSettled([fetch(latestUrl.toString()), fetch(monthUrl.toString())]);
-
-    let rawTickets: any[] = [];
-    if (latestRes.status === "fulfilled" && latestRes.value.ok) {
-      const json = await latestRes.value.json();
-      rawTickets = json?.data ?? [];
-    }
-
-    let monthCalendar: any[] = [];
-    if (monthRes.status === "fulfilled" && monthRes.value.ok) {
-      const json = await monthRes.value.json();
-      monthCalendar = (json?.data ?? [])
-        .map((d: any) => ({
-          date: d.depart_date ?? null,
-          price: d.value ?? 0,
-          stops: d.number_of_changes ?? 0,
-        }))
-        .filter((d: any) => d.date && d.price > 0);
-    }
-
-    // Filter to requested month, fallback to all
-    const filtered = rawTickets
-      .filter((t: any) => !t.departure_at || t.departure_at.startsWith(monthParam))
-      .sort((a: any, b: any) => (a.value ?? 0) - (b.value ?? 0));
-
-    const tickets =
-      filtered.length > 0 ? filtered : rawTickets.sort((a: any, b: any) => (a.value ?? 0) - (b.value ?? 0));
-
-    const searchId = `data_${origin}_${destination}_${monthParam}`;
-
-    const flights: AviasalesFlightOption[] = tickets.slice(0, 30).map((t: any, idx: number) => {
-      const price = t.value ?? 0;
-      const airline = t.airline ?? "";
-      const departAt = t.departure_at ?? departureDate + "T00:00:00Z";
-      const returnAt = t.return_at ?? null;
-      const ticketUrl = buildAffiliateUrl(
-        departAt.slice(0, 10) || departureDate,
-        returnAt ? returnAt.slice(0, 10) : returnDate,
-      );
-
-      return {
-        id: `data_${origin}_${destination}_${idx}_${price}`,
-        proposalId: `${origin}${destination}${idx}`,
-        searchId,
-        resultsUrl: ticketUrl,
-        ticketSignature: "",
-        from: origin,
-        to: destination,
-        departureLocal: departAt,
-        arrivalLocal: departAt,
-        durationMinutes: t.duration ?? 0,
-        stops: t.number_of_changes ?? 0,
-        stopAirports: [],
-        segments: [
-          {
-            from: origin,
-            to: destination,
-            departureLocal: departAt,
-            arrivalLocal: departAt,
-            durationMinutes: t.duration ?? 0,
-            airlineCode: airline,
-            flightNumber: String(t.flight_number ?? ""),
-            aircraft: "",
-          },
-        ],
-        airlineCodes: airline ? [airline] : [],
-        airlineNames: airline ? [airline] : [],
-        airlineLogos: airline ? [`https://www.gstatic.com/flights/airline_logos/70px/${airline}.png`] : [],
-        price,
-        pricePerPerson: price,
-        currency: currency.toUpperCase(),
-        agentId: 0,
-        agentName: "Aviasales",
-        baggageIncluded: false,
-        baggageWeight: null,
-        handbagsIncluded: true,
-        handbagsWeight: null,
-        tripClass: params.tripClass || "Y",
-        seatsAvailable: null,
-        isLowcost: false,
-        isReturn: Boolean(returnDate),
-      } as AviasalesFlightOption;
+    const { data, error } = await callEdgeFunction<AviasalesSearchResult>("aviasales-search", {
+      origin: String(params.origin || "").toUpperCase(),
+      destination: String(params.destination || "").toUpperCase(),
+      departureDate: params.departureDate,
+      returnDate: params.returnDate || null,
+      adults: params.adults || 1,
+      children: params.children || 0,
+      infants: params.infants || 0,
+      currency: (params.currency || "EUR").toLowerCase(),
+      locale: params.locale || "hu",
+      marketCode: params.marketCode || "HU",
+      tripClass: params.tripClass || "Y",
     });
 
-    if (flights.length === 0 && monthCalendar.length === 0) {
-      return {
-        success: true,
-        flights: [],
-        totalResults: 0,
-        isComplete: true,
-        searchId,
-        resultsUrl: mainAffiliateUrl,
-        message: "Erre az útvonalra most nincs elérhető cached adat. Keress közvetlenül az Aviasales oldalán.",
-      };
-    }
-
-    return {
-      success: true,
-      searchId,
-      resultsUrl: mainAffiliateUrl,
-      flights,
-      totalResults: flights.length,
-      isComplete: true,
-    };
+    if (error) throw error;
+    return data || { success: false, error: "No data returned" };
   } catch (error: any) {
     console.error("Flight search error:", error);
     return { success: false, error: error.message || "Hiba történt a járatkeresés során" };
