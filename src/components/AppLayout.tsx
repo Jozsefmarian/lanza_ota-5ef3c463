@@ -20,6 +20,16 @@ import { images, categories } from "../data/images";
 import { User, getStoredUser, syncWishlist, getWishlist, saveBooking, saveSearch } from "../lib/auth";
 
 const AppLayout: React.FC = () => {
+  useEffect(() => {
+  const script = document.createElement('script');
+  script.src = "https://tpemd.com/content?currency=eur&trs=529055&shmarker=545241&lat=47.50&lng=19.04&powered_by=false&search_host=www.aviasales.com%2Fsearch&locale=hu&origin=BUD&value_min=0&value_max=1000000&round_trip=true&only_direct=false&radius=1&draggable=true&disable_zoom=false&show_logo=false&scrollwheel=true&primary=%239333EA&secondary=%23EC4899&light=%23ffffff&width=1500&height=500&zoom=4&promo_id=4054&campaign_id=100";
+  script.async = true;
+  script.charset = 'utf-8';
+  document.getElementById('aviasales-map-container')?.appendChild(script);
+  return () => {
+    document.getElementById('aviasales-map-container')?.removeChild(script);
+  };
+}, []);
   // Auth state
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const [bannerVisible, setBannerVisible] = useState(true);
@@ -512,12 +522,11 @@ const AppLayout: React.FC = () => {
             <h2 className="text-3xl lg:text-4xl font-bold text-gray-900">Fedezd fel az árakat a térképen</h2>
             <p className="text-gray-600 mt-2">Kattints bármely városra a legolcsóbb repülőjegyekért Budapestről</p>
           </div>
-          <div className="rounded-2xl overflow-hidden shadow-lg">
-            <script
-              async
-              src="https://tpemd.com/content?currency=eur&trs=529055&shmarker=545241&lat=47.50&lng=19.04&powered_by=false&search_host=www.aviasales.com%2Fsearch&locale=hu&origin=BUD&value_min=0&value_max=1000000&round_trip=true&only_direct=false&radius=1&draggable=true&disable_zoom=false&show_logo=false&scrollwheel=true&primary=%239333EA&secondary=%23EC4899&light=%23ffffff&width=1500&height=500&zoom=4&promo_id=4054&campaign_id=100"
-              charSet="utf-8"
-            />
+          <div
+  id="aviasales-map-container"
+  className="rounded-2xl overflow-hidden shadow-lg"
+  style={{ minHeight: '500px' }}
+/>
           </div>
         </div>
       </section>
