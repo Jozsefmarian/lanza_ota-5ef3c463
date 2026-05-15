@@ -474,6 +474,7 @@ export interface AviasalesFlightOption {
   seatsAvailable: number | null;
   isLowcost: boolean;
   isReturn: boolean;
+  affiliateUrl?: string;
   returnDepartureLocal?: string;
   returnArrivalLocal?: string;
   returnDurationMinutes?: number;
