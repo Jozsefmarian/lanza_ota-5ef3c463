@@ -1,31 +1,23 @@
-import React, { useState, useMemo, useEffect, useRef, useLayoutEffect } from 'react';
-import { SlidersHorizontal, TrendingUp, Building2, ArrowRight, Plane, Car } from 'lucide-react';
-import Header from './Header';
-import AppBanner from './AppBanner';
-import SearchWidget from './SearchWidget';
-import DestinationCard from './DestinationCard';
-import HotelCard from './HotelCard';
-import CategoryFilter from './CategoryFilter';
-import DealsSection from './DealsSection';
-import TestimonialsSection from './TestimonialsSection';
-import AuthModal from './AuthModal';
-import BookingModal from './BookingModal';
+import React, { useState, useMemo, useEffect, useRef, useLayoutEffect } from "react";
+import { SlidersHorizontal, TrendingUp, Building2, ArrowRight, Plane, Car } from "lucide-react";
+import Header from "./Header";
+import AppBanner from "./AppBanner";
+import SearchWidget from "./SearchWidget";
+import DestinationCard from "./DestinationCard";
+import HotelCard from "./HotelCard";
+import CategoryFilter from "./CategoryFilter";
+import DealsSection from "./DealsSection";
+import TestimonialsSection from "./TestimonialsSection";
+import AuthModal from "./AuthModal";
+import BookingModal from "./BookingModal";
 
-
-import SearchResultsModal from './SearchResultsModal';
-import UserDashboard from './UserDashboard';
-import Footer from './Footer';
-import CarCard from './CarCard';
-import PackageBuilder from './PackageBuilder';
-import { images, categories } from '../data/images';
-import { User, getStoredUser, syncWishlist, getWishlist, saveBooking, saveSearch } from '../lib/auth';
-
-
-
-
-
-
-
+import SearchResultsModal from "./SearchResultsModal";
+import UserDashboard from "./UserDashboard";
+import Footer from "./Footer";
+import CarCard from "./CarCard";
+import PackageBuilder from "./PackageBuilder";
+import { images, categories } from "../data/images";
+import { User, getStoredUser, syncWishlist, getWishlist, saveBooking, saveSearch } from "../lib/auth";
 
 const AppLayout: React.FC = () => {
   // Auth state
@@ -41,10 +33,10 @@ const AppLayout: React.FC = () => {
     update();
     const ro = new ResizeObserver(update);
     ro.observe(el);
-    window.addEventListener('resize', update);
+    window.addEventListener("resize", update);
     return () => {
       ro.disconnect();
-      window.removeEventListener('resize', update);
+      window.removeEventListener("resize", update);
     };
   }, [bannerVisible]);
 
@@ -54,28 +46,26 @@ const AppLayout: React.FC = () => {
   // Booking state
   const [bookingModalOpen, setBookingModalOpen] = useState(false);
   const [bookingItem, setBookingItem] = useState<any>(null);
-  const [bookingType, setBookingType] = useState<'hotel' | 'flight' | 'car'>('hotel');
+  const [bookingType, setBookingType] = useState<"hotel" | "flight" | "car">("hotel");
 
   // Search results modal
   const [searchResultsOpen, setSearchResultsOpen] = useState(false);
-  const [searchType, setSearchType] = useState<'hotels' | 'flights' | 'cars'>('hotels');
+  const [searchType, setSearchType] = useState<"hotels" | "flights" | "cars">("hotels");
   const [searchParams, setSearchParams] = useState<any>({});
 
   // Filter state
-  
-  const [activeCategory, setActiveCategory] = useState('all');
+
+  const [activeCategory, setActiveCategory] = useState("all");
   const [filters, setFilters] = useState({
     priceRange: [0, 2000] as [number, number],
     starRating: [] as number[],
     amenities: [] as string[],
-    categories: [] as string[]
+    categories: [] as string[],
   });
 
   // Wishlist & Cart
   const [wishlist, setWishlist] = useState<number[]>([]);
   const [cart, setCart] = useState<any[]>([]);
-
-
 
   // Load user on mount
   useEffect(() => {
@@ -88,27 +78,27 @@ const AppLayout: React.FC = () => {
   }, []);
   const loadUserWishlist = async (userId: string) => {
     const items = await getWishlist(userId);
-    const ids = items.map(item => item.type === 'hotel' ? item.id + 100 : item.id);
+    const ids = items.map((item) => (item.type === "hotel" ? item.id + 100 : item.id));
     setWishlist(ids);
   };
 
   // Sync wishlist when it changes (for logged in users)
   useEffect(() => {
     if (user) {
-      const items = wishlist.map(id => {
+      const items = wishlist.map((id) => {
         if (id > 100) {
-          const hotel = images.hotels.find(h => h.id === id - 100);
+          const hotel = images.hotels.find((h) => h.id === id - 100);
           return {
-            type: 'hotel',
+            type: "hotel",
             id: id - 100,
-            data: hotel
+            data: hotel,
           };
         } else {
-          const dest = images.destinations.find(d => d.id === id);
+          const dest = images.destinations.find((d) => d.id === id);
           return {
-            type: 'destination',
+            type: "destination",
             id,
-            data: dest
+            data: dest,
           };
         }
       });
@@ -118,8 +108,8 @@ const AppLayout: React.FC = () => {
 
   // Filter destinations
   const filteredDestinations = useMemo(() => {
-    return images.destinations.filter(dest => {
-      if (activeCategory !== 'all' && dest.category !== activeCategory) return false;
+    return images.destinations.filter((dest) => {
+      if (activeCategory !== "all" && dest.category !== activeCategory) return false;
       if (dest.price < filters.priceRange[0] || dest.price > filters.priceRange[1]) return false;
       if (filters.categories.length > 0 && !filters.categories.includes(dest.category)) return false;
       return true;
@@ -135,20 +125,19 @@ const AppLayout: React.FC = () => {
     setUser(null);
     setWishlist([]);
   };
-  const handleSearch = (type: 'hotels' | 'flights' | string, data: any) => {
-    console.log('Keresés:', type, data);
+  const handleSearch = (type: "hotels" | "flights" | string, data: any) => {
+    console.log("Keresés:", type, data);
 
     // Open search results modal for API search
-    if (type === 'hotels' || type === 'flights' || type === 'cars') {
-      setSearchType(type as 'hotels' | 'flights' | 'cars');
+    if (type === "hotels" || type === "flights" || type === "cars") {
+      setSearchType(type as "hotels" | "flights" | "cars");
       setSearchParams(data);
       setSearchResultsOpen(true);
 
       // Save search for logged in users
       if (user) {
-        const label = type === 'flights'
-          ? `${type} - ${data.origin} → ${data.destination}`
-          : `${type} - ${data.destination}`;
+        const label =
+          type === "flights" ? `${type} - ${data.origin} → ${data.destination}` : `${type} - ${data.destination}`;
         saveSearch(user.id, label, type, data);
       }
     } else {
@@ -156,84 +145,94 @@ const AppLayout: React.FC = () => {
       const section = document.getElementById(type);
       if (section) {
         section.scrollIntoView({
-          behavior: 'smooth'
+          behavior: "smooth",
         });
       }
     }
   };
 
-  const handleSearchResultSelect = (item: any, type: 'hotel' | 'flight' | 'car') => {
+  const handleSearchResultSelect = (item: any, type: "hotel" | "flight" | "car") => {
     setSearchResultsOpen(false);
     setBookingItem(item);
     setBookingType(type);
     setBookingModalOpen(true);
   };
   const handleWishlistToggle = (id: number) => {
-    setWishlist(prev => prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]);
+    setWishlist((prev) => (prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]));
   };
   const handleDestinationClick = (destination: any) => {
-    console.log('Úticél kiválasztva:', destination);
+    console.log("Úticél kiválasztva:", destination);
   };
   const handleBookHotel = (hotel: any) => {
     setBookingItem(hotel);
-    setBookingType('hotel');
+    setBookingType("hotel");
     setBookingModalOpen(true);
   };
   const handleSelectFlight = (flight: any) => {
     setBookingItem(flight);
-    setBookingType('flight');
+    setBookingType("flight");
     setBookingModalOpen(true);
   };
   const handleRentCar = (car: any) => {
     setBookingItem(car);
-    setBookingType('car');
+    setBookingType("car");
     setBookingModalOpen(true);
   };
   const handleBookingConfirm = async (bookingData: any) => {
-    console.log('Foglalás megerősítve:', bookingData);
-    setCart(prev => [...prev, bookingData]);
+    console.log("Foglalás megerősítve:", bookingData);
+    setCart((prev) => [...prev, bookingData]);
 
     // Save booking for logged in users
     if (user) {
       await saveBooking(user.id, {
         type: bookingType,
         item: bookingItem,
-        ...bookingData
+        ...bookingData,
       });
     }
   };
   const handleBuildPackage = (packageData: any) => {
-    console.log('Csomag összeállítva:', packageData);
+    console.log("Csomag összeállítva:", packageData);
     setBookingItem(packageData);
-    setBookingType('hotel');
+    setBookingType("hotel");
     setBookingModalOpen(true);
   };
   const handleDealClick = (deal: any) => {
-    console.log('Ajánlat kiválasztva:', deal);
+    console.log("Ajánlat kiválasztva:", deal);
     setBookingItem({
       ...deal,
-      price: deal.dealPrice
+      price: deal.dealPrice,
     });
-    setBookingType('hotel');
+    setBookingType("hotel");
     setBookingModalOpen(true);
   };
   const handleRunSavedSearch = (type: string, params: any) => {
-    setSearchType(type as 'hotels' | 'flights' | 'cars');
+    setSearchType(type as "hotels" | "flights" | "cars");
     setSearchParams(params);
     setSearchResultsOpen(true);
   };
-  return <div className="min-h-screen bg-gray-50">
+  return (
+    <div className="min-h-screen bg-gray-50">
       {/* Sticky csoport: promóciós banner + fejléc együtt */}
       <div ref={stickyHeaderRef} className="fixed top-0 left-0 right-0 z-50">
         {bannerVisible && <AppBanner onClose={() => setBannerVisible(false)} />}
-        <Header user={user} onAuthClick={() => setAuthModalOpen(true)} onDashboardClick={() => setDashboardOpen(true)} cartCount={cart.length} wishlistCount={wishlist.length} />
+        <Header
+          user={user}
+          onAuthClick={() => setAuthModalOpen(true)}
+          onDashboardClick={() => setDashboardOpen(true)}
+          cartCount={cart.length}
+          wishlistCount={wishlist.length}
+        />
       </div>
 
       {/* Spacer = fix fejléc tényleges magassága, hogy ne maradjon fehér rés */}
       <div style={{ height: stickyHeight }} aria-hidden="true" />
 
       {/* Hero Szekció */}
-      <section className="relative w-full flex flex-col items-center justify-start overflow-hidden" style={{ minHeight: '680px' }}>
+      <section
+        className="relative w-full flex flex-col items-center justify-start overflow-hidden"
+        style={{ minHeight: "680px" }}
+      >
         {/* Háttérkép - rögzített, nem mozdul a tab váltáskor */}
         <div className="absolute inset-0 pointer-events-none">
           <img src={images.hero} alt="Utazási célpont" className="w-full h-full object-cover object-center" />
@@ -254,7 +253,9 @@ const AppLayout: React.FC = () => {
                 itt kezdődik
               </span>
             </h1>
-            <p className="text-lg sm:text-xl text-white/80 max-w-2xl mx-auto mb-8">Fedezd fel a legcsodálatosabb úticélokat, foglalj repülőjegyet, szállást, autót - minden egy helyen.</p>
+            <p className="text-lg sm:text-xl text-white/80 max-w-2xl mx-auto mb-8">
+              Fedezd fel a legcsodálatosabb úticélokat, foglalj repülőjegyet, szállást, autót - minden egy helyen.
+            </p>
           </div>
 
           {/* Kereső Widget */}
@@ -262,22 +263,29 @@ const AppLayout: React.FC = () => {
 
           {/* Gyors Statisztikák */}
           <div className="flex flex-wrap justify-center gap-8 mt-12">
-            {[{
-            value: '2.9M+',
-            label: 'Szállás'
-          }, {
-            value: '500+',
-            label: 'Légitársaság'
-          }, {
-            value: '150+',
-            label: 'Ország'
-          }, {
-            value: '15%',
-            label: 'Átl. megtakarítás'
-          }].map((stat, index) => <div key={index} className="text-center">
+            {[
+              {
+                value: "2.9M+",
+                label: "Szállás",
+              },
+              {
+                value: "500+",
+                label: "Légitársaság",
+              },
+              {
+                value: "150+",
+                label: "Ország",
+              },
+              {
+                value: "15%",
+                label: "Átl. megtakarítás",
+              },
+            ].map((stat, index) => (
+              <div key={index} className="text-center">
                 <p className="text-2xl sm:text-3xl font-bold text-white">{stat.value}</p>
                 <p className="text-white/60 text-sm">{stat.label}</p>
-              </div>)}
+              </div>
+            ))}
           </div>
         </div>
 
@@ -297,26 +305,36 @@ const AppLayout: React.FC = () => {
               <span className="inline-block px-4 py-1 bg-purple-100 text-purple-700 rounded-full text-sm font-medium mb-4">
                 Felfedezés
               </span>
-              <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-2">
-                Népszerű úticélok
-              </h2>
-              <p className="text-gray-600">
-                Fedezd fel a legkeresettebb helyeket, ahová az utazók most foglalnak
-              </p>
+              <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-2">Népszerű úticélok</h2>
+              <p className="text-gray-600">Fedezd fel a legkeresettebb helyeket, ahová az utazók most foglalnak</p>
             </div>
           </div>
 
           <div className="mb-8">
-            <CategoryFilter categories={categories} activeCategory={activeCategory} onCategoryChange={setActiveCategory} />
+            <CategoryFilter
+              categories={categories}
+              activeCategory={activeCategory}
+              onCategoryChange={setActiveCategory}
+            />
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {filteredDestinations.map(destination => <DestinationCard key={destination.id} destination={destination} isWishlisted={wishlist.includes(destination.id)} onWishlistToggle={handleWishlistToggle} onClick={handleDestinationClick} />)}
+            {filteredDestinations.map((destination) => (
+              <DestinationCard
+                key={destination.id}
+                destination={destination}
+                isWishlisted={wishlist.includes(destination.id)}
+                onWishlistToggle={handleWishlistToggle}
+                onClick={handleDestinationClick}
+              />
+            ))}
           </div>
 
-          {filteredDestinations.length === 0 && <div className="text-center py-12">
+          {filteredDestinations.length === 0 && (
+            <div className="text-center py-12">
               <p className="text-gray-500">Nincs találat a szűrőknek megfelelően. Próbáld módosítani a szűrőket.</p>
-            </div>}
+            </div>
+          )}
         </div>
       </section>
 
@@ -336,9 +354,7 @@ const AppLayout: React.FC = () => {
                 <Building2 className="w-6 h-6 text-purple-600" />
                 <span className="text-purple-600 font-medium">Szállások</span>
               </div>
-              <h2 className="text-3xl lg:text-4xl font-bold text-gray-900">
-                Kiemelt szálláshelyek
-              </h2>
+              <h2 className="text-3xl lg:text-4xl font-bold text-gray-900">Kiemelt szálláshelyek</h2>
             </div>
             <button className="hidden sm:flex items-center space-x-2 text-purple-600 hover:text-purple-700 font-medium">
               <span>Összes megtekintése</span>
@@ -347,7 +363,15 @@ const AppLayout: React.FC = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {images.hotels.map(hotel => <HotelCard key={hotel.id} hotel={hotel} isWishlisted={wishlist.includes(hotel.id + 100)} onWishlistToggle={id => handleWishlistToggle(id + 100)} onBook={handleBookHotel} />)}
+            {images.hotels.map((hotel) => (
+              <HotelCard
+                key={hotel.id}
+                hotel={hotel}
+                isWishlisted={wishlist.includes(hotel.id + 100)}
+                onWishlistToggle={(id) => handleWishlistToggle(id + 100)}
+                onBook={handleBookHotel}
+              />
+            ))}
           </div>
         </div>
       </section>
@@ -361,43 +385,81 @@ const AppLayout: React.FC = () => {
                 <Plane className="w-6 h-6 text-pink-600" />
                 <span className="text-pink-600 font-medium">Repülőjáratok</span>
               </div>
-              <h2 className="text-3xl lg:text-4xl font-bold text-gray-900">
-                Népszerű útvonalak
-              </h2>
-              <p className="text-gray-600 mt-2">Válassz egy népszerű útvonalat, vagy használd a keresőt fent a "Repülőjegy" fülön.</p>
+              <h2 className="text-3xl lg:text-4xl font-bold text-gray-900">Népszerű útvonalak</h2>
+              <p className="text-gray-600 mt-2">
+                Válassz egy népszerű útvonalat, vagy használd a keresőt fent a "Repülőjegy" fülön.
+              </p>
             </div>
           </div>
 
           {/* Popular routes grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
             {[
-              { from: 'BUD', fromCity: 'Budapest', to: 'ACE', toCity: 'Lanzarote', img: 'https://images.unsplash.com/photo-1590523741831-ab7e8b8f9c7f?w=400&h=200&fit=crop' },
-              { from: 'BUD', fromCity: 'Budapest', to: 'TFS', toCity: 'Tenerife', img: 'https://images.unsplash.com/photo-1518684079-3c830dcef090?w=400&h=200&fit=crop' },
-              { from: 'BUD', fromCity: 'Budapest', to: 'BCN', toCity: 'Barcelona', img: 'https://images.unsplash.com/photo-1583422409516-2895a77efded?w=400&h=200&fit=crop' },
-              { from: 'BUD', fromCity: 'Budapest', to: 'LPA', toCity: 'Gran Canaria', img: 'https://images.unsplash.com/photo-1500259571355-332da5cb07aa?w=400&h=200&fit=crop' },
-              { from: 'BUD', fromCity: 'Budapest', to: 'PMI', toCity: 'Mallorca', img: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=400&h=200&fit=crop' },
-              { from: 'BUD', fromCity: 'Budapest', to: 'ATH', toCity: 'Athén', img: 'https://images.unsplash.com/photo-1555993539-1732b0258235?w=400&h=200&fit=crop' },
+              {
+                from: "BUD",
+                fromCity: "Budapest",
+                to: "ACE",
+                toCity: "Lanzarote",
+                img: "https://images.unsplash.com/photo-1590523741831-ab7e8b8f9c7f?w=400&h=200&fit=crop",
+              },
+              {
+                from: "BUD",
+                fromCity: "Budapest",
+                to: "TFS",
+                toCity: "Tenerife",
+                img: "https://images.unsplash.com/photo-1518684079-3c830dcef090?w=400&h=200&fit=crop",
+              },
+              {
+                from: "BUD",
+                fromCity: "Budapest",
+                to: "BCN",
+                toCity: "Barcelona",
+                img: "https://images.unsplash.com/photo-1583422409516-2895a77efded?w=400&h=200&fit=crop",
+              },
+              {
+                from: "BUD",
+                fromCity: "Budapest",
+                to: "LPA",
+                toCity: "Gran Canaria",
+                img: "https://images.unsplash.com/photo-1500259571355-332da5cb07aa?w=400&h=200&fit=crop",
+              },
+              {
+                from: "BUD",
+                fromCity: "Budapest",
+                to: "PMI",
+                toCity: "Mallorca",
+                img: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=400&h=200&fit=crop",
+              },
+              {
+                from: "BUD",
+                fromCity: "Budapest",
+                to: "ATH",
+                toCity: "Athén",
+                img: "https://images.unsplash.com/photo-1555993539-1732b0258235?w=400&h=200&fit=crop",
+              },
             ].map((route, idx) => {
               // Calculate a date 14 days from now for the default departure
-              const depDate = new Date(Date.now() + 14 * 86400000).toISOString().split('T')[0];
-              const retDate = new Date(Date.now() + 21 * 86400000).toISOString().split('T')[0];
+              const depDate = new Date(Date.now() + 14 * 86400000).toISOString().split("T")[0];
+              const retDate = new Date(Date.now() + 21 * 86400000).toISOString().split("T")[0];
 
               return (
                 <button
                   key={idx}
-                  onClick={() => handleSearch('flights', {
-                    origin: route.from,
-                    destination: route.to,
-                    departureDate: depDate,
-                    returnDate: retDate,
-                    adults: 1,
-                    children: 0,
-                    infants: 0,
-                    tripClass: 'Y',
-                    currency: 'EUR',
-                    locale: 'hu',
-                    marketCode: 'HU',
-                  })}
+                  onClick={() =>
+                    handleSearch("flights", {
+                      origin: route.from,
+                      destination: route.to,
+                      departureDate: depDate,
+                      returnDate: retDate,
+                      adults: 1,
+                      children: 0,
+                      infants: 0,
+                      tripClass: "Y",
+                      currency: "EUR",
+                      locale: "hu",
+                      marketCode: "HU",
+                    })
+                  }
                   className="group relative overflow-hidden rounded-2xl h-40 text-left"
                 >
                   <img
@@ -412,7 +474,9 @@ const AppLayout: React.FC = () => {
                       <Plane className="w-4 h-4 text-pink-300" />
                       <span className="font-bold text-lg">{route.toCity}</span>
                     </div>
-                    <p className="text-white/70 text-xs mt-1">{route.from} → {route.to} • Kattints a kereséshez</p>
+                    <p className="text-white/70 text-xs mt-1">
+                      {route.from} → {route.to} • Kattints a kereséshez
+                    </p>
                   </div>
                 </button>
               );
@@ -422,10 +486,12 @@ const AppLayout: React.FC = () => {
           <div className="bg-gradient-to-br from-pink-50 to-purple-50 rounded-2xl p-8 text-center border border-pink-100">
             <Plane className="w-12 h-12 text-pink-500 mx-auto mb-4" />
             <h3 className="text-xl font-bold text-gray-900 mb-2">Keress repülőjegyet valós időben</h3>
-            <p className="text-gray-600 max-w-lg mx-auto mb-4">500+ légitársaság járatai között keresgélhetsz. Válts a "Repülőjegy" fülre a fenti keresőben.</p>
+            <p className="text-gray-600 max-w-lg mx-auto mb-4">
+              500+ légitársaság járatai között keresgélhetsz. Válts a "Repülőjegy" fülre a fenti keresőben.
+            </p>
             <button
               onClick={() => {
-                window.scrollTo({ top: 0, behavior: 'smooth' });
+                window.scrollTo({ top: 0, behavior: "smooth" });
               }}
               className="px-6 py-3 bg-gradient-to-r from-pink-500 to-purple-600 text-white font-medium rounded-xl hover:from-pink-400 hover:to-purple-500 transition-all shadow-lg shadow-pink-500/30"
             >
@@ -435,8 +501,26 @@ const AppLayout: React.FC = () => {
         </div>
       </section>
 
-
-
+      {/* Repülőjegy Árak Térképen */}
+      <section className="py-8 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="mb-6">
+            <div className="flex items-center space-x-2 mb-2">
+              <Plane className="w-6 h-6 text-pink-600" />
+              <span className="text-pink-600 font-medium">Repülőjegy árak</span>
+            </div>
+            <h2 className="text-3xl lg:text-4xl font-bold text-gray-900">Fedezd fel az árakat a térképen</h2>
+            <p className="text-gray-600 mt-2">Kattints bármely városra a legolcsóbb repülőjegyekért Budapestről</p>
+          </div>
+          <div className="rounded-2xl overflow-hidden shadow-lg">
+            <script
+              async
+              src="https://tpemd.com/content?currency=eur&trs=529055&shmarker=545241&lat=47.50&lng=19.04&powered_by=false&search_host=www.aviasales.com%2Fsearch&locale=hu&origin=BUD&value_min=0&value_max=1000000&round_trip=true&only_direct=false&radius=1&draggable=true&disable_zoom=false&show_logo=false&scrollwheel=true&primary=%239333EA&secondary=%23EC4899&light=%23ffffff&width=1500&height=500&zoom=4&promo_id=4054&campaign_id=100"
+              charSet="utf-8"
+            />
+          </div>
+        </div>
+      </section>
 
       {/* Autóbérlés Szekció */}
       <section id="cars" className="py-16 lg:py-24">
@@ -447,9 +531,7 @@ const AppLayout: React.FC = () => {
                 <Car className="w-6 h-6 text-orange-600" />
                 <span className="text-orange-600 font-medium">Autóbérlés</span>
               </div>
-              <h2 className="text-3xl lg:text-4xl font-bold text-gray-900">
-                Bérelj autót
-              </h2>
+              <h2 className="text-3xl lg:text-4xl font-bold text-gray-900">Bérelj autót</h2>
             </div>
             <button className="hidden sm:flex items-center space-x-2 text-orange-600 hover:text-orange-700 font-medium">
               <span>Összes megtekintése</span>
@@ -458,7 +540,9 @@ const AppLayout: React.FC = () => {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {images.cars.map(car => <CarCard key={car.id} car={car} onRent={handleRentCar} />)}
+            {images.cars.map((car) => (
+              <CarCard key={car.id} car={car} onRent={handleRentCar} />
+            ))}
           </div>
         </div>
       </section>
@@ -483,16 +567,34 @@ const AppLayout: React.FC = () => {
       {/* Modálok */}
       <AuthModal isOpen={authModalOpen} onClose={() => setAuthModalOpen(false)} onAuthSuccess={handleAuthSuccess} />
 
-      <BookingModal isOpen={bookingModalOpen} onClose={() => setBookingModalOpen(false)} item={bookingItem} type={bookingType} onConfirm={handleBookingConfirm} />
+      <BookingModal
+        isOpen={bookingModalOpen}
+        onClose={() => setBookingModalOpen(false)}
+        item={bookingItem}
+        type={bookingType}
+        onConfirm={handleBookingConfirm}
+      />
 
-      
+      <SearchResultsModal
+        isOpen={searchResultsOpen}
+        onClose={() => setSearchResultsOpen(false)}
+        searchType={searchType}
+        searchParams={searchParams}
+        onSelect={handleSearchResultSelect}
+      />
 
-      <SearchResultsModal isOpen={searchResultsOpen} onClose={() => setSearchResultsOpen(false)} searchType={searchType} searchParams={searchParams} onSelect={handleSearchResultSelect} />
-
-      {user && <UserDashboard isOpen={dashboardOpen} onClose={() => setDashboardOpen(false)} user={user} onLogout={handleLogout} onRunSearch={handleRunSavedSearch} />}
+      {user && (
+        <UserDashboard
+          isOpen={dashboardOpen}
+          onClose={() => setDashboardOpen(false)}
+          user={user}
+          onLogout={handleLogout}
+          onRunSearch={handleRunSavedSearch}
+        />
+      )}
 
       {/* Élő Foglalási Értesítések */}
-      
-    </div>;
+    </div>
+  );
 };
 export default AppLayout;
