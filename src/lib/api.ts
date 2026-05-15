@@ -507,7 +507,7 @@ export async function searchFlights(params: AviasalesSearchParams): Promise<Avia
     const monthParam = departureDate.slice(0, 7); // YYYY-MM
 
     // Affiliate token (public, read-only Data API)
-    const TOKEN = "dd61f5f97c97ebdff62de75f37e4900a";
+    const TOKEN = "b0e7fe52c303829862f641dbc8189114";
     const MARKER = "545241";
 
     // Build affiliate redirect URL (Aviasales booking link)
